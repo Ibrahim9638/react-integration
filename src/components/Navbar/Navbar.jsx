@@ -1,12 +1,45 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useContext } from "react";
+import { Link, NavLink } from "react-router-dom";
+import { AuthContext } from "../../Provider/AuthProvider";
 
 const Navbar = () => {
-    const navLink = <>
-     <li><NavLink to='/'>Home</NavLink></li>
-     <li><NavLink to='/login'>Login</NavLink></li>
-     <li><NavLink to='/register'>Register</NavLink></li>
+  const { user, logout } = useContext(AuthContext);
+  const handleLogOut = () => {
+    logout()
+      .then(() => {
+        console.log("user logged in");
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  };
+
+  const navLink = (
+    <>
+      <li>
+        <NavLink to="/">Home</NavLink>
+      </li>
+      <li>
+        <NavLink to="/login">Login</NavLink>
+      </li>
+      <li>
+        <NavLink to="/register">Register</NavLink>
+      </li>
+      <li>
+        <NavLink to="/order">Orders</NavLink>
+      </li>
+      {user && (
+        <>
+          <li>
+            <NavLink to="/profile">Profile</NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard">Dashboard</NavLink>
+          </li>
+        </>
+      )}
     </>
+  );
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
@@ -34,15 +67,26 @@ const Navbar = () => {
             {navLink}
           </ul>
         </div>
-        <a className="btn btn-ghost text-xl">daisyUI</a>
+        <a className="btn btn-ghost text-xl">React Integration</a>
       </div>
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">
-        {navLink}
-        </ul>
+        <ul className="menu menu-horizontal px-1">{navLink}</ul>
       </div>
       <div className="navbar-end">
-        <a className="btn">Button</a>
+        {user ? (
+          <>
+            <span>{user.email}</span>
+            <a onClick={handleLogOut} className="btn btn-sm">
+              Sign Out
+            </a>
+          </>
+        ) : (
+          <>
+            <Link to="/login">
+              <button className="btn btn-sm">Login</button>
+            </Link>
+          </>
+        )}
       </div>
     </div>
   );

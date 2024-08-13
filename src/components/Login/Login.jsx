@@ -1,8 +1,10 @@
 import React, { useContext } from 'react';
 import { AuthContext } from '../../Provider/AuthProvider';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-    const {signInUser} = useContext(AuthContext);
+    const {signInUser, googleSignIn} = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const handleSubmit = e =>{
         e.preventDefault();
@@ -13,10 +15,22 @@ const Login = () => {
         signInUser(email, password)
         .then(result=>{
             console.log(result.user);
+            e.target.reset();
+            navigate('/');
+
         })
         .catch(error=>{
             console.log(error.message);
         })
+    }
+    const handleGoogle = ()=>{
+      googleSignIn()
+      .then(result=>{
+        console.log(result.user);
+      })
+      .catch(error=>{
+        console.log(error.message);
+      })
     }
     return (
         <div className="hero bg-base-200 min-h-screen">
@@ -56,6 +70,9 @@ const Login = () => {
             <button className="btn btn-primary">Login</button>
           </div>
         </form>
+        <div className='text-center mt-3 mb-3'>
+          <button onClick={handleGoogle} className='btn btn-success text-center text-white'>Google SignIn</button>
+        </div>
       </div>
     </div>
     );
